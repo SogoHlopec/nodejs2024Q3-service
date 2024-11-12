@@ -1,26 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
+import { InMemoryUserRepository } from './repositories/in-memory-user.repository';
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly userRepository: InMemoryUserRepository) {}
+
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    return this.userRepository.create(
+      createUserDto.login,
+      createUserDto.password,
+    );
   }
 
-  findAll() {
-    return `This action returns all users`;
+  findAll(): User[] {
+    return this.userRepository.getAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string): User {
+    const user = this.userRepository.getById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    const user = this.userRepository.getById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    if (user.password !== updateUserDto.oldPassword) {
+      throw new Error('Old password is wrong');
+    }
+    return this.userRepository.update(id, updateUserDto.newPassword);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id: string) {
+    return this.userRepository.delete(id);
   }
 }
