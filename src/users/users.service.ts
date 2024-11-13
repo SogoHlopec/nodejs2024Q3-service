@@ -14,10 +14,7 @@ export class UsersService {
   constructor(private readonly userRepository: InMemoryUserRepository) {}
 
   create(createUserDto: CreateUserDto): UserResponseDto {
-    const user = this.userRepository.create(
-      createUserDto.login,
-      createUserDto.password,
-    );
+    const user = this.userRepository.create(createUserDto);
     return user.toResponse();
   }
 
@@ -37,7 +34,7 @@ export class UsersService {
     return user.toResponse();
   }
 
-  update(id: string, UpdatePasswordDto: UpdatePasswordDto): UserResponseDto {
+  update(id: string, updatePasswordDto: UpdatePasswordDto): UserResponseDto {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
@@ -45,13 +42,10 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (user.password !== UpdatePasswordDto.oldPassword) {
+    if (user.password !== updatePasswordDto.oldPassword) {
       throw new ForbiddenException('Old password is wrong');
     }
-    const userUpdate = this.userRepository.update(
-      id,
-      UpdatePasswordDto.newPassword,
-    );
+    const userUpdate = this.userRepository.update(id, updatePasswordDto);
     return userUpdate.toResponse();
   }
 

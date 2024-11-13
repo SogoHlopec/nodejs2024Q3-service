@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
 import { IUserRepository } from './user.repository.interface';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdatePasswordDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class InMemoryUserRepository implements IUserRepository {
@@ -14,15 +16,15 @@ export class InMemoryUserRepository implements IUserRepository {
     return this.users.find((user) => user.id === id);
   }
 
-  create(login: string, password: string): User {
-    const newUser = new User(login, password);
+  create(createUserDto: CreateUserDto): User {
+    const newUser = new User(createUserDto.login, createUserDto.password);
     this.users.push(newUser);
     return newUser;
   }
 
-  update(id: string, newPassword: string): User {
+  update(id: string, updatePasswordDto: UpdatePasswordDto): User {
     const user = this.getById(id);
-    user.updatePassword(newPassword);
+    user.updatePassword(updatePasswordDto.newPassword);
     return user;
   }
 
