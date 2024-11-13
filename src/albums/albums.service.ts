@@ -8,10 +8,14 @@ import { UpdateAlbumDto } from './dto/update-album.dto';
 import { InMemoryAlbumRepository } from './repositories/in-memory-album.repository';
 import { Album } from './entities/album.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
+import { InMemoryTrackRepository } from 'src/tracks/repositories/in-memory-track.repository';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private readonly albumRepository: InMemoryAlbumRepository) {}
+  constructor(
+    private readonly albumRepository: InMemoryAlbumRepository,
+    private readonly trackRepository: InMemoryTrackRepository,
+  ) {}
 
   create(createAlbumDto: CreateAlbumDto): Album {
     const album = this.albumRepository.create(createAlbumDto);
@@ -54,6 +58,13 @@ export class AlbumsService {
     if (!album) {
       throw new NotFoundException('Album not found');
     }
+
+    const tracks = this.trackRepository.getAll();
+    tracks.forEach((track) => {
+      if (track.albumId === id) {
+        this.trackRepository.update(track.id, { ...track, albumId: null });
+      }
+    });
 
     this.albumRepository.delete(id);
   }
