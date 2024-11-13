@@ -5,7 +5,6 @@ import {
   Body,
   Param,
   Delete,
-  NotFoundException,
   Put,
   ValidationPipe,
   HttpCode,
