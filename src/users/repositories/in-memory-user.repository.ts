@@ -10,7 +10,7 @@ export class InMemoryUserRepository implements IUserRepository {
     return this.users;
   }
 
-  getById(id: string): User | undefined {
+  getById(id: string): User {
     return this.users.find((user) => user.id === id);
   }
 
@@ -20,21 +20,13 @@ export class InMemoryUserRepository implements IUserRepository {
     return newUser;
   }
 
-  update(id: string, newPassword: string): User | null {
+  update(id: string, newPassword: string): User {
     const user = this.getById(id);
-    if (user) {
-      user.updatePassword(newPassword);
-      return user;
-    }
-    return null;
+    user.updatePassword(newPassword);
+    return user;
   }
 
-  delete(id: string): boolean {
-    const user = this.getById(id);
-    if (user) {
-      this.users = this.users.filter((user) => user.id !== id);
-      return true;
-    }
-    return false;
+  delete(id: string): void {
+    this.users = this.users.filter((user) => user.id !== id);
   }
 }

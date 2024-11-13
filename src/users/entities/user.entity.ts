@@ -1,4 +1,5 @@
-import { randomUUID } from 'node:crypto';
+import { v4 as uuidv4 } from 'uuid';
+import { UserResponseDto } from '../dto/create-user.dto';
 
 export class User {
   id: string; // uuid v4
@@ -9,7 +10,7 @@ export class User {
   updatedAt: number; // timestamp of last update
 
   constructor(login: string, password: string) {
-    this.id = randomUUID();
+    this.id = uuidv4();
     this.login = login;
     this.password = password;
     this.version = 1;
@@ -21,5 +22,15 @@ export class User {
     this.password = newPassword;
     this.version++;
     this.updatedAt = Date.now();
+  }
+
+  toResponse(): UserResponseDto {
+    return {
+      id: this.id,
+      login: this.login,
+      version: this.version,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
   }
 }

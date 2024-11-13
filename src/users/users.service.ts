@@ -1,44 +1,68 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateUserDto, UserResponseDto } from './dto/create-user.dto';
+import { UpdatePasswordDto } from './dto/update-user.dto';
 import { InMemoryUserRepository } from './repositories/in-memory-user.repository';
+import { validateUuid } from './utils/uuid-validator.util';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly userRepository: InMemoryUserRepository) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.userRepository.create(
+  create(createUserDto: CreateUserDto): UserResponseDto {
+    const user = this.userRepository.create(
       createUserDto.login,
       createUserDto.password,
     );
+    return user.toResponse();
   }
 
-  findAll(): User[] {
-    return this.userRepository.getAll();
+  findAll(): UserResponseDto[] {
+    const users = this.userRepository.getAll();
+    return users.map((user) => user.toResponse());
   }
 
-  findOne(id: string): User {
+  findOne(id: string): UserResponseDto {
+    if (!validateUuid(id)) {
+      throw new BadRequestException('Id is invalid');
+    }
     const user = this.userRepository.getById(id);
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
-    return user;
+    return user.toResponse();
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
+  update(id: string, UpdatePasswordDto: UpdatePasswordDto): UserResponseDto {
+    if (!validateUuid(id)) {
+      throw new BadRequestException('Id is invalid');
+    }
     const user = this.userRepository.getById(id);
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
-    if (user.password !== updateUserDto.oldPassword) {
-      throw new Error('Old password is wrong');
+    if (user.password !== UpdatePasswordDto.oldPassword) {
+      throw new ForbiddenException('Old password is wrong');
     }
-    return this.userRepository.update(id, updateUserDto.newPassword);
+    const userUpdate = this.userRepository.update(
+      id,
+      UpdatePasswordDto.newPassword,
+    );
+    return userUpdate.toResponse();
   }
 
   remove(id: string) {
-    return this.userRepository.delete(id);
+    if (!validateUuid(id)) {
+      throw new BadRequestException('Id is invalid');
+    }
+    const user = this.userRepository.getById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    this.userRepository.delete(id);
   }
 }
