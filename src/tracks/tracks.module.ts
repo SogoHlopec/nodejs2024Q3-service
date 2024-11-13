@@ -6,5 +6,6 @@ import { InMemoryTrackRepository } from './repositories/in-memory-track.reposito
 @Module({
   controllers: [TracksController],
   providers: [TracksService, InMemoryTrackRepository],
+  exports: [InMemoryTrackRepository],
 })
 export class TracksModule {}

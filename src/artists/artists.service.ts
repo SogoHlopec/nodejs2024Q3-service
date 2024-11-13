@@ -1,26 +1,83 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InMemoryArtistRepository } from './repositories/in-memory-artist.repository';
 import { CreateArtistDto } from './dto/create-artist.dto';
+import { Artist } from './entities/artist.entity';
+import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateArtistDto } from './dto/update-artist.dto';
+import { InMemoryTrackRepository } from 'src/tracks/repositories/in-memory-track.repository';
 
 @Injectable()
 export class ArtistsService {
-  create(createArtistDto: CreateArtistDto) {
-    return 'This action adds a new artist';
+  constructor(
+    private readonly artistRepository: InMemoryArtistRepository,
+    private readonly trackRepository: InMemoryTrackRepository,
+  ) {}
+
+  create(createArtistDto: CreateArtistDto): Artist {
+    const artist = this.artistRepository.create(createArtistDto);
+    return artist;
   }
 
-  findAll() {
-    return `This action returns all artists`;
+  findAll(): Artist[] {
+    const artists = this.artistRepository.getAll();
+    return artists;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} artist`;
+  findOne(id: string): Artist {
+    if (!validateUuid(id)) {
+      throw new BadRequestException('Id is invalid');
+    }
+    const artist = this.artistRepository.getById(id);
+    if (!artist) {
+      throw new NotFoundException('Artist not found');
+    }
+    return artist;
   }
 
-  update(id: number, updateArtistDto: UpdateArtistDto) {
-    return `This action updates a #${id} artist`;
+  update(id: string, updateArtistDto: UpdateArtistDto): Artist {
+    if (!validateUuid(id)) {
+      throw new BadRequestException('Id is invalid');
+    }
+    const artist = this.artistRepository.getById(id);
+    if (!artist) {
+      throw new NotFoundException('Artist not found');
+    }
+    const artistUpdate = this.artistRepository.update(id, updateArtistDto);
+    return artistUpdate;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} artist`;
+  remove(id: string): void {
+    if (!validateUuid(id)) {
+      throw new BadRequestException('Id is invalid');
+    }
+    const artist = this.artistRepository.getById(id);
+    if (!artist) {
+      throw new NotFoundException('Artist not found');
+    }
+
+    console.log('test1');
+
+    try {
+      const tracks = this.trackRepository.getAll();
+      console.log(tracks);
+      tracks.forEach((track) => {
+        console.log('test2');
+
+        if (track.artistId === id) {
+          console.log('test3');
+
+          this.trackRepository.update(track.id, { ...track, artistId: null });
+          console.log(track);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    this.artistRepository.delete(id);
   }
 }
