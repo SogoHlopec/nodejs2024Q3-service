@@ -6,5 +6,6 @@ import { InMemoryAlbumRepository } from './repositories/in-memory-album.reposito
 @Module({
   controllers: [AlbumsController],
   providers: [AlbumsService, InMemoryAlbumRepository],
+  exports: [InMemoryAlbumRepository],
 })
 export class AlbumsModule {}

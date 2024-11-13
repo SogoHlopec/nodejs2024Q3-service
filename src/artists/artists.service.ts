@@ -9,12 +9,14 @@ import { Artist } from './entities/artist.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { InMemoryTrackRepository } from 'src/tracks/repositories/in-memory-track.repository';
+import { InMemoryAlbumRepository } from 'src/albums/repositories/in-memory-album.repository';
 
 @Injectable()
 export class ArtistsService {
   constructor(
     private readonly artistRepository: InMemoryArtistRepository,
     private readonly trackRepository: InMemoryTrackRepository,
+    private readonly albumRepository: InMemoryAlbumRepository,
   ) {}
 
   create(createArtistDto: CreateArtistDto): Artist {
@@ -63,7 +65,13 @@ export class ArtistsService {
     tracks.forEach((track) => {
       if (track.artistId === id) {
         this.trackRepository.update(track.id, { ...track, artistId: null });
-        console.log(track);
+      }
+    });
+
+    const albums = this.albumRepository.getAll();
+    albums.forEach((album) => {
+      if (album.artistId === id) {
+        this.albumRepository.update(album.id, { ...album, artistId: null });
       }
     });
 
