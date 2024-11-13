@@ -59,24 +59,13 @@ export class ArtistsService {
       throw new NotFoundException('Artist not found');
     }
 
-    console.log('test1');
-
-    try {
-      const tracks = this.trackRepository.getAll();
-      console.log(tracks);
-      tracks.forEach((track) => {
-        console.log('test2');
-
-        if (track.artistId === id) {
-          console.log('test3');
-
-          this.trackRepository.update(track.id, { ...track, artistId: null });
-          console.log(track);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    const tracks = this.trackRepository.getAll();
+    tracks.forEach((track) => {
+      if (track.artistId === id) {
+        this.trackRepository.update(track.id, { ...track, artistId: null });
+        console.log(track);
+      }
+    });
 
     this.artistRepository.delete(id);
   }
