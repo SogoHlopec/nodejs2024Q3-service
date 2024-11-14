@@ -10,6 +10,7 @@ import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { InMemoryTrackRepository } from 'src/tracks/repositories/in-memory-track.repository';
 import { InMemoryAlbumRepository } from 'src/albums/repositories/in-memory-album.repository';
+import { InMemoryFavoritesRepository } from 'src/favorites/repositories/in-memory-favorites.repository';
 
 @Injectable()
 export class ArtistsService {
@@ -17,6 +18,7 @@ export class ArtistsService {
     private readonly artistRepository: InMemoryArtistRepository,
     private readonly trackRepository: InMemoryTrackRepository,
     private readonly albumRepository: InMemoryAlbumRepository,
+    private readonly favoriteRepository: InMemoryFavoritesRepository,
   ) {}
 
   create(createArtistDto: CreateArtistDto): Artist {
@@ -72,6 +74,13 @@ export class ArtistsService {
     albums.forEach((album) => {
       if (album.artistId === id) {
         this.albumRepository.update(album.id, { ...album, artistId: null });
+      }
+    });
+
+    const favorites = this.favoriteRepository.getAll();
+    favorites.artists.forEach((artistId) => {
+      if (artistId === id) {
+        this.favoriteRepository.deleteArtist(id);
       }
     });
 

@@ -8,10 +8,14 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { Track } from './entities/track.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateTrackDto } from './dto/update-track.dto';
+import { InMemoryFavoritesRepository } from 'src/favorites/repositories/in-memory-favorites.repository';
 
 @Injectable()
 export class TracksService {
-  constructor(private readonly trackRepository: InMemoryTrackRepository) {}
+  constructor(
+    private readonly trackRepository: InMemoryTrackRepository,
+    private readonly favoriteRepository: InMemoryFavoritesRepository,
+  ) {}
 
   create(createTrackDto: CreateTrackDto): Track {
     const track = this.trackRepository.create(createTrackDto);
@@ -55,5 +59,12 @@ export class TracksService {
       throw new NotFoundException('Track not found');
     }
     this.trackRepository.delete(id);
+
+    const favorites = this.favoriteRepository.getAll();
+    favorites.tracks.forEach((trackId) => {
+      if (trackId === id) {
+        this.favoriteRepository.deleteTrack(id);
+      }
+    });
   }
 }

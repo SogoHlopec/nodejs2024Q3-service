@@ -1,34 +1,46 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Param, Delete, Get, HttpCode } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
-import { UpdateFavoriteDto } from './dto/update-favorite.dto';
+import { FavoritesResponseDto } from './dto/response-favorites.dto';
 
-@Controller('favorites')
+@Controller('favs')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
-  @Post()
-  create(@Body() createFavoriteDto: CreateFavoriteDto) {
-    return this.favoritesService.create(createFavoriteDto);
-  }
-
   @Get()
-  findAll() {
-    return this.favoritesService.findAll();
+  getAll(): FavoritesResponseDto {
+    return this.favoritesService.getAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.favoritesService.findOne(+id);
+  @Post('track/:id')
+  addTrack(@Param('id') id: string): { message: string } {
+    return this.favoritesService.addTrack(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFavoriteDto: UpdateFavoriteDto) {
-    return this.favoritesService.update(+id, updateFavoriteDto);
+  @Delete('track/:id')
+  @HttpCode(204)
+  deleteTrack(@Param('id') id: string): void {
+    return this.favoritesService.deleteTrack(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.favoritesService.remove(+id);
+  @Post('album/:id')
+  addAlbum(@Param('id') id: string): { message: string } {
+    return this.favoritesService.addAlbum(id);
+  }
+
+  @Delete('album/:id')
+  @HttpCode(204)
+  deleteAlbum(@Param('id') id: string): void {
+    return this.favoritesService.deleteAlbum(id);
+  }
+
+  @Post('artist/:id')
+  addArtist(@Param('id') id: string): { message: string } {
+    return this.favoritesService.addArtist(id);
+  }
+
+  @Delete('artist/:id')
+  @HttpCode(204)
+  deleteArtist(@Param('id') id: string): void {
+    return this.favoritesService.deleteArtist(id);
   }
 }

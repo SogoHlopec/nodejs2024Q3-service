@@ -9,12 +9,14 @@ import { InMemoryAlbumRepository } from './repositories/in-memory-album.reposito
 import { Album } from './entities/album.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { InMemoryTrackRepository } from 'src/tracks/repositories/in-memory-track.repository';
+import { InMemoryFavoritesRepository } from 'src/favorites/repositories/in-memory-favorites.repository';
 
 @Injectable()
 export class AlbumsService {
   constructor(
     private readonly albumRepository: InMemoryAlbumRepository,
     private readonly trackRepository: InMemoryTrackRepository,
+    private readonly favoriteRepository: InMemoryFavoritesRepository,
   ) {}
 
   create(createAlbumDto: CreateAlbumDto): Album {
@@ -63,6 +65,13 @@ export class AlbumsService {
     tracks.forEach((track) => {
       if (track.albumId === id) {
         this.trackRepository.update(track.id, { ...track, albumId: null });
+      }
+    });
+
+    const favorites = this.favoriteRepository.getAll();
+    favorites.albums.forEach((albumId) => {
+      if (albumId === id) {
+        this.favoriteRepository.deleteAlbum(id);
       }
     });
 
