@@ -8,7 +8,8 @@
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/SogoHlopec/nodejs2024Q3-service.git
+get checkout develop
 ```
 
 ## Installing NPM modules
