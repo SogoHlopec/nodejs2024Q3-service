@@ -37,9 +37,9 @@ export class UsersController {
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body(new ValidationPipe()) UpdatePasswordDto: UpdatePasswordDto,
+    @Body(new ValidationPipe()) updatePasswordDto: UpdatePasswordDto,
   ): UserResponseDto {
-    return this.usersService.update(id, UpdatePasswordDto);
+    return this.usersService.update(id, updatePasswordDto);
   }
 
   @Delete(':id')

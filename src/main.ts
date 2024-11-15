@@ -2,7 +2,8 @@ import * as dotenv from 'dotenv';
 import { NestFactory } from '@nestjs/core';
 import * as swaggerUi from 'swagger-ui-express';
 import * as yaml from 'js-yaml';
-import { readFileSync } from 'fs';
+import {} from 'node:fs';
+import * as fs from 'node:fs/promises';
 import { join } from 'path';
 import { AppModule } from './app.module';
 
@@ -13,9 +14,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const swaggerDocument = yaml.load(
-    readFileSync(join(__dirname, '..', 'doc', 'api.yaml'), 'utf8'),
+    await fs.readFile(join(__dirname, '../..', 'doc', 'api.yaml'), 'utf8'),
   );
-
   app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   await app.listen(PORT);
