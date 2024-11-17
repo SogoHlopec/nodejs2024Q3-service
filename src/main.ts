@@ -18,6 +18,8 @@ async function bootstrap() {
   );
   app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-  await app.listen(PORT);
+  await app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 }
 bootstrap();

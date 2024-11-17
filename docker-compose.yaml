@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: ./db
+    image: user/mydb:latest
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - mynetwork
+    restart: always
