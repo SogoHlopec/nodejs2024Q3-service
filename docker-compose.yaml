@@ -13,8 +13,7 @@ services:
       - PORT=${PORT}
     restart: always
     volumes:
-      - .:/app
-      - /app/node_modules
+      - ./src:/user/app/src
     networks:
       - user-defined-bridge
 
