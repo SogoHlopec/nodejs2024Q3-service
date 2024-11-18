@@ -1,14 +1,44 @@
 version: '3.8'
 
 services:
+  app:
+    build:
+      context: .
+    image: user/service-docker:latest
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - db
+    environment:
+      - PORT=${PORT}
+    restart: always
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - user-defined-bridge
+
   db:
     build:
       context: ./db
-    image: user/mydb:latest
-    env_file:
-      - .env
+    image: user/service-docker-postgres:latest
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DB_HOST: ${DB_HOST}
+    restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
-      - mynetwork
-    restart: always
+      - user-defined-bridge
+
+networks:
+  user-defined-bridge:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
