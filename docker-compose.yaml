@@ -33,8 +33,6 @@ services:
       - db-data:/var/lib/postgresql/data
     networks:
       - user-defined-bridge
-    depends_on:
-      - db
 
 networks:
   user-defined-bridge:
