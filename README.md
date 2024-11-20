@@ -4,12 +4,13 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- DOcker - [Download & Install Docker](https://docs.docker.com/get-started/get-docker/).
 
 ## Downloading
 
 ```
 git clone https://github.com/SogoHlopec/nodejs2024Q3-service.git
-get checkout develop
+get checkout part-2
 ```
 
 ## Installing NPM modules
@@ -21,7 +22,7 @@ npm install
 ## Running application
 
 ```
-npm start
+docker compose up --build
 ```
 
 After starting the app on port (4000 as default) you can open

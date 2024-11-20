@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-    image: user/service-docker:latest
+    image: sogohlopec/service-docker:latest
     ports:
       - ${PORT}:${PORT}
     depends_on:
@@ -20,7 +20,7 @@ services:
   db:
     build:
       context: ./db
-    image: user/service-docker-postgres:latest
+    image: sogohlopec/service-docker-postgres:latest
     ports:
       - ${DB_PORT}:${DB_PORT}
     environment:
