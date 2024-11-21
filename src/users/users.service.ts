@@ -6,54 +6,83 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, UserResponseDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { InMemoryUserRepository } from './repositories/in-memory-user.repository';
 import { validateUuid } from './utils/uuid-validator.util';
+import { DbUserRepository } from './repositories/db-user.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: InMemoryUserRepository) {}
+  constructor(private readonly userRepository: DbUserRepository) {}
 
-  create(createUserDto: CreateUserDto): UserResponseDto {
-    const user = this.userRepository.create(createUserDto);
-    return user.toResponse();
+  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    const user = await this.userRepository.create(createUserDto);
+    return {
+      id: user.id,
+      login: user.login,
+      version: user.version,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 
-  findAll(): UserResponseDto[] {
-    const users = this.userRepository.getAll();
-    return users.map((user) => user.toResponse());
+  async findAll(): Promise<UserResponseDto[]> {
+    const users = await this.userRepository.getAll();
+    return users.map((user) => {
+      return {
+        id: user.id,
+        login: user.login,
+        version: user.version,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+    });
   }
 
-  findOne(id: string): UserResponseDto {
+  async findOne(id: string): Promise<UserResponseDto> {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
-    const user = this.userRepository.getById(id);
+    const user = await this.userRepository.getById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    return user.toResponse();
+    return {
+      id: user.id,
+      login: user.login,
+      version: user.version,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 
-  update(id: string, updatePasswordDto: UpdatePasswordDto): UserResponseDto {
+  async update(
+    id: string,
+    updatePasswordDto: UpdatePasswordDto,
+  ): Promise<UserResponseDto> {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
-    const user = this.userRepository.getById(id);
+    const user = await this.userRepository.getById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
     if (user.password !== updatePasswordDto.oldPassword) {
       throw new ForbiddenException('Old password is wrong');
     }
-    const userUpdate = this.userRepository.update(id, updatePasswordDto);
-    return userUpdate.toResponse();
+    const userUpdate = await this.userRepository.update(id, updatePasswordDto);
+    return {
+      id: userUpdate.id,
+      login: userUpdate.login,
+      version: userUpdate.version,
+      createdAt: userUpdate.createdAt,
+      updatedAt: userUpdate.updatedAt,
+    };
   }
 
-  remove(id: string) {
+  async remove(id: string) {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
-    const user = this.userRepository.getById(id);
+    const user = await this.userRepository.getById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }

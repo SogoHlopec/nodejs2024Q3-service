@@ -18,33 +18,33 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(
+  async create(
     @Body(new ValidationPipe()) createUserDto: CreateUserDto,
-  ): UserResponseDto {
-    return this.usersService.create(createUserDto);
+  ): Promise<UserResponseDto> {
+    return await this.usersService.create(createUserDto);
   }
 
   @Get()
-  findAll(): UserResponseDto[] {
-    return this.usersService.findAll();
+  async findAll(): Promise<UserResponseDto[]> {
+    return await this.usersService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): UserResponseDto {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<UserResponseDto> {
+    return await this.usersService.findOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body(new ValidationPipe()) updatePasswordDto: UpdatePasswordDto,
-  ): UserResponseDto {
-    return this.usersService.update(id, updatePasswordDto);
+  ): Promise<UserResponseDto> {
+    return await this.usersService.update(id, updatePasswordDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    this.usersService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.usersService.remove(id);
   }
 }
