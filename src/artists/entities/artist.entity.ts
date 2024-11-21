@@ -11,3 +11,9 @@ export class Artist {
     this.grammy = grammy;
   }
 }
+
+export class DbArtist {
+  id: string; // uuid v4
+  name: string;
+  grammy: boolean;
+}

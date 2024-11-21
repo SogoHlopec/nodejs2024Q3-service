@@ -12,38 +12,40 @@ import {
 import { ArtistsService } from './artists.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { Artist } from './entities/artist.entity';
+import { DbArtist } from './entities/artist.entity';
 
 @Controller('artist')
 export class ArtistsController {
   constructor(private readonly artistsService: ArtistsService) {}
 
   @Post()
-  create(@Body(new ValidationPipe()) createArtistDto: CreateArtistDto): Artist {
-    return this.artistsService.create(createArtistDto);
+  async create(
+    @Body(new ValidationPipe()) createArtistDto: CreateArtistDto,
+  ): Promise<DbArtist> {
+    return await this.artistsService.create(createArtistDto);
   }
 
   @Get()
-  findAll(): Artist[] {
-    return this.artistsService.findAll();
+  async findAll(): Promise<DbArtist[]> {
+    return await this.artistsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Artist {
-    return this.artistsService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<DbArtist> {
+    return await this.artistsService.findOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body(new ValidationPipe()) updateArtistDto: UpdateArtistDto,
-  ): Artist {
-    return this.artistsService.update(id, updateArtistDto);
+  ): Promise<DbArtist> {
+    return await this.artistsService.update(id, updateArtistDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    this.artistsService.remove(id);
+  async remove(@Param('id') id: string): Promise<void> {
+    await this.artistsService.remove(id);
   }
 }
