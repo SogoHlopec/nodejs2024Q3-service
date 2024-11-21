@@ -12,38 +12,40 @@ import {
 import { TracksService } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { Track } from './entities/track.entity';
+import { DbTrack } from './entities/track.entity';
 
 @Controller('track')
 export class TracksController {
   constructor(private readonly tracksService: TracksService) {}
 
   @Post()
-  create(@Body(new ValidationPipe()) createTrackDto: CreateTrackDto): Track {
-    return this.tracksService.create(createTrackDto);
+  async create(
+    @Body(new ValidationPipe()) createTrackDto: CreateTrackDto,
+  ): Promise<DbTrack> {
+    return await this.tracksService.create(createTrackDto);
   }
 
   @Get()
-  findAll(): Track[] {
-    return this.tracksService.findAll();
+  async findAll(): Promise<DbTrack[]> {
+    return await this.tracksService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Track {
-    return this.tracksService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<DbTrack> {
+    return await this.tracksService.findOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body(new ValidationPipe()) updateTrackDto: UpdateTrackDto,
-  ): Track {
-    return this.tracksService.update(id, updateTrackDto);
+  ): Promise<DbTrack> {
+    return await this.tracksService.update(id, updateTrackDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    this.tracksService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.tracksService.remove(id);
   }
 }

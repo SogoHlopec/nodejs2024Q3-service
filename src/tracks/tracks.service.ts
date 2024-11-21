@@ -3,62 +3,62 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InMemoryTrackRepository } from './repositories/in-memory-track.repository';
 import { CreateTrackDto } from './dto/create-track.dto';
-import { Track } from './entities/track.entity';
+import { DbTrack } from './entities/track.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { InMemoryFavoritesRepository } from 'src/favorites/repositories/in-memory-favorites.repository';
+import { DbTrackRepository } from './repositories/db-track.repository';
 
 @Injectable()
 export class TracksService {
   constructor(
-    private readonly trackRepository: InMemoryTrackRepository,
+    private readonly trackRepository: DbTrackRepository,
     private readonly favoriteRepository: InMemoryFavoritesRepository,
   ) {}
 
-  create(createTrackDto: CreateTrackDto): Track {
-    const track = this.trackRepository.create(createTrackDto);
+  async create(createTrackDto: CreateTrackDto): Promise<DbTrack> {
+    const track = await this.trackRepository.create(createTrackDto);
     return track;
   }
 
-  findAll(): Track[] {
-    const tracks = this.trackRepository.getAll();
+  async findAll(): Promise<DbTrack[]> {
+    const tracks = await this.trackRepository.getAll();
     return tracks;
   }
 
-  findOne(id: string): Track {
+  async findOne(id: string): Promise<DbTrack> {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
-    const track = this.trackRepository.getById(id);
+    const track = await this.trackRepository.getById(id);
     if (!track) {
       throw new NotFoundException('Track not found');
     }
     return track;
   }
 
-  update(id: string, updateTrackDto: UpdateTrackDto): Track {
+  async update(id: string, updateTrackDto: UpdateTrackDto): Promise<DbTrack> {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
-    const track = this.trackRepository.getById(id);
+    const track = await this.trackRepository.getById(id);
     if (!track) {
       throw new NotFoundException('Track not found');
     }
-    const trackUpdate = this.trackRepository.update(id, updateTrackDto);
+    const trackUpdate = await this.trackRepository.update(id, updateTrackDto);
     return trackUpdate;
   }
 
-  remove(id: string) {
+  async remove(id: string): Promise<void> {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
-    const track = this.trackRepository.getById(id);
+    const track = await this.trackRepository.getById(id);
     if (!track) {
       throw new NotFoundException('Track not found');
     }
-    this.trackRepository.delete(id);
+    await this.trackRepository.delete(id);
 
     const favorites = this.favoriteRepository.getAll();
     favorites.tracks.forEach((trackId) => {

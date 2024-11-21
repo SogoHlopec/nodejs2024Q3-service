@@ -12,38 +12,40 @@ import {
 import { AlbumsService } from './albums.service';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { Album } from './entities/album.entity';
+import { DbAlbum } from './entities/album.entity';
 
 @Controller('album')
 export class AlbumsController {
   constructor(private readonly albumsService: AlbumsService) {}
 
   @Post()
-  create(@Body(new ValidationPipe()) createAlbumDto: CreateAlbumDto): Album {
-    return this.albumsService.create(createAlbumDto);
+  async create(
+    @Body(new ValidationPipe()) createAlbumDto: CreateAlbumDto,
+  ): Promise<DbAlbum> {
+    return await this.albumsService.create(createAlbumDto);
   }
 
   @Get()
-  findAll(): Album[] {
-    return this.albumsService.findAll();
+  async findAll(): Promise<DbAlbum[]> {
+    return await this.albumsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Album {
-    return this.albumsService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<DbAlbum> {
+    return await this.albumsService.findOne(id);
   }
 
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body(new ValidationPipe()) updateAlbumDto: UpdateAlbumDto,
-  ): Album {
-    return this.albumsService.update(id, updateAlbumDto);
+  ): Promise<DbAlbum> {
+    return await this.albumsService.update(id, updateAlbumDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id') id: string) {
-    this.albumsService.remove(id);
+  async remove(@Param('id') id: string) {
+    await this.albumsService.remove(id);
   }
 }

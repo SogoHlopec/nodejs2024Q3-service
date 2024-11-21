@@ -13,3 +13,10 @@ export class Album {
     this.artistId = artistId;
   }
 }
+
+export class DbAlbum {
+  id: string; // uuid v4
+  name: string;
+  year: number;
+  artistId: string | null; // refers to Artist
+}
