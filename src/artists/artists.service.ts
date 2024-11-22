@@ -7,7 +7,6 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { DbArtist } from './entities/artist.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { InMemoryFavoritesRepository } from 'src/favorites/repositories/in-memory-favorites.repository';
 import { DbArtistRepository } from './repositories/db-artist.repository';
 import { DbTrackRepository } from 'src/tracks/repositories/db-track.repository';
 import { DBAlbumRepository } from 'src/albums/repositories/db-album.repository';
