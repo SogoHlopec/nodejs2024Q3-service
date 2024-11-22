@@ -7,16 +7,16 @@ import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { DbAlbum } from './entities/album.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
-import { InMemoryTrackRepository } from 'src/tracks/repositories/in-memory-track.repository';
-import { InMemoryFavoritesRepository } from 'src/favorites/repositories/in-memory-favorites.repository';
 import { DBAlbumRepository } from './repositories/db-album.repository';
+import { DbTrackRepository } from 'src/tracks/repositories/db-track.repository';
+import { DbFavoritesRepository } from 'src/favorites/repositories/db-favorites.repository';
 
 @Injectable()
 export class AlbumsService {
   constructor(
     private readonly albumRepository: DBAlbumRepository,
-    private readonly trackRepository: InMemoryTrackRepository,
-    private readonly favoriteRepository: InMemoryFavoritesRepository,
+    private readonly trackRepository: DbTrackRepository,
+    private readonly favoriteRepository: DbFavoritesRepository,
   ) {}
 
   async create(createAlbumDto: CreateAlbumDto): Promise<DbAlbum> {
@@ -61,16 +61,16 @@ export class AlbumsService {
       throw new NotFoundException('Album not found');
     }
 
-    const tracks = this.trackRepository.getAll();
+    const tracks = await this.trackRepository.getAll();
     tracks.forEach((track) => {
       if (track.albumId === id) {
         this.trackRepository.update(track.id, { ...track, albumId: null });
       }
     });
 
-    const favorites = this.favoriteRepository.getAll();
-    favorites.albums.forEach((albumId) => {
-      if (albumId === id) {
+    const favorites = await this.favoriteRepository.getAll();
+    favorites.albums.forEach((album) => {
+      if (album.id === id) {
         this.favoriteRepository.deleteAlbum(id);
       }
     });

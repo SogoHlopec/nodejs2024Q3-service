@@ -7,18 +7,19 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { DbArtist } from './entities/artist.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { InMemoryTrackRepository } from 'src/tracks/repositories/in-memory-track.repository';
-import { InMemoryAlbumRepository } from 'src/albums/repositories/in-memory-album.repository';
 import { InMemoryFavoritesRepository } from 'src/favorites/repositories/in-memory-favorites.repository';
 import { DbArtistRepository } from './repositories/db-artist.repository';
+import { DbTrackRepository } from 'src/tracks/repositories/db-track.repository';
+import { DBAlbumRepository } from 'src/albums/repositories/db-album.repository';
+import { DbFavoritesRepository } from 'src/favorites/repositories/db-favorites.repository';
 
 @Injectable()
 export class ArtistsService {
   constructor(
     private readonly artistRepository: DbArtistRepository,
-    private readonly trackRepository: InMemoryTrackRepository,
-    private readonly albumRepository: InMemoryAlbumRepository,
-    private readonly favoriteRepository: InMemoryFavoritesRepository,
+    private readonly trackRepository: DbTrackRepository,
+    private readonly albumRepository: DBAlbumRepository,
+    private readonly favoriteRepository: DbFavoritesRepository,
   ) {}
 
   async create(createArtistDto: CreateArtistDto): Promise<DbArtist> {
@@ -90,8 +91,8 @@ export class ArtistsService {
     });
 
     const favorites = await this.favoriteRepository.getAll();
-    favorites.artists.forEach((artistId) => {
-      if (artistId === id) {
+    favorites.artists.forEach((artist) => {
+      if (artist.id === id) {
         this.favoriteRepository.deleteArtist(id);
       }
     });

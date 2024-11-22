@@ -7,14 +7,14 @@ import { CreateTrackDto } from './dto/create-track.dto';
 import { DbTrack } from './entities/track.entity';
 import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateTrackDto } from './dto/update-track.dto';
-import { InMemoryFavoritesRepository } from 'src/favorites/repositories/in-memory-favorites.repository';
 import { DbTrackRepository } from './repositories/db-track.repository';
+import { DbFavoritesRepository } from 'src/favorites/repositories/db-favorites.repository';
 
 @Injectable()
 export class TracksService {
   constructor(
     private readonly trackRepository: DbTrackRepository,
-    private readonly favoriteRepository: InMemoryFavoritesRepository,
+    private readonly favoriteRepository: DbFavoritesRepository,
   ) {}
 
   async create(createTrackDto: CreateTrackDto): Promise<DbTrack> {
@@ -60,9 +60,9 @@ export class TracksService {
     }
     await this.trackRepository.delete(id);
 
-    const favorites = this.favoriteRepository.getAll();
-    favorites.tracks.forEach((trackId) => {
-      if (trackId === id) {
+    const favorites = await this.favoriteRepository.getAll();
+    favorites.tracks.forEach((track) => {
+      if (track.id === id) {
         this.favoriteRepository.deleteTrack(id);
       }
     });
