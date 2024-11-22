@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { DbService } from '../../db/db.service';
 import { DbTrack } from '../entities/track.entity';
 import { CreateTrackDto } from '../dto/create-track.dto';
 import { UpdateTrackDto } from '../dto/update-track.dto';
@@ -7,7 +7,7 @@ import { IDbTrackRepository } from './db-track.repository.interface';
 
 @Injectable()
 export class DbTrackRepository implements IDbTrackRepository {
-  private prisma = new PrismaClient();
+  constructor(private readonly prisma: DbService) {}
 
   async getAll(): Promise<DbTrack[]> {
     const tracks = await this.prisma.track.findMany();

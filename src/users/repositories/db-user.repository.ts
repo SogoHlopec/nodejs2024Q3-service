@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { DbService } from '../../db/db.service';
 import { DbUser } from '../entities/user.entity';
 import { IDbUserRepository } from './db-user.repository.interface';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -7,7 +7,7 @@ import { UpdatePasswordDto } from '../dto/update-user.dto';
 
 @Injectable()
 export class DbUserRepository implements IDbUserRepository {
-  private prisma = new PrismaClient();
+  constructor(private readonly prisma: DbService) {}
 
   async getAll(): Promise<DbUser[]> {
     const users = await this.prisma.user.findMany();

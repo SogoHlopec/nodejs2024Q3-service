@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { DbService } from '../../db/db.service';
 import { DbAlbum } from '../entities/album.entity';
 import { CreateAlbumDto } from '../dto/create-album.dto';
 import { UpdateAlbumDto } from '../dto/update-album.dto';
@@ -7,7 +7,7 @@ import { IDbAlbumRepository } from './db-album.repository.interface';
 
 @Injectable()
 export class DBAlbumRepository implements IDbAlbumRepository {
-  private prisma = new PrismaClient();
+  constructor(private readonly prisma: DbService) {}
 
   async getAll(): Promise<DbAlbum[]> {
     const albums = await this.prisma.album.findMany();

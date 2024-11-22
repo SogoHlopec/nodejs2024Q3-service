@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { DbService } from '../../db/db.service';
 import { DbArtist } from '../entities/artist.entity';
 import { CreateArtistDto } from '../dto/create-artist.dto';
 import { UpdateArtistDto } from '../dto/update-artist.dto';
@@ -7,7 +7,7 @@ import { IDbArtistRepository } from './db-artist.repository.interface';
 
 @Injectable()
 export class DbArtistRepository implements IDbArtistRepository {
-  private prisma = new PrismaClient();
+  constructor(private readonly prisma: DbService) {}
 
   async getAll(): Promise<DbArtist[]> {
     const artists = await this.prisma.artist.findMany();
