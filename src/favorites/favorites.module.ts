@@ -4,7 +4,7 @@ import { FavoritesController } from './favorites.controller';
 import { ArtistsModule } from 'src/artists/artists.module';
 import { AlbumsModule } from 'src/albums/albums.module';
 import { TracksModule } from 'src/tracks/tracks.module';
-import { InMemoryFavoritesRepository } from './repositories/in-memory-favorites.repository';
+import { DbFavoritesRepository } from './repositories/db-favorites.repository';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { InMemoryFavoritesRepository } from './repositories/in-memory-favorites.
     forwardRef(() => ArtistsModule),
   ],
   controllers: [FavoritesController],
-  providers: [FavoritesService, InMemoryFavoritesRepository],
-  exports: [InMemoryFavoritesRepository],
+  providers: [FavoritesService, DbFavoritesRepository],
+  exports: [DbFavoritesRepository],
 })
 export class FavoritesModule {}
