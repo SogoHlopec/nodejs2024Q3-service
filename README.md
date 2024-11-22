@@ -19,20 +19,41 @@ get checkout part-2
 npm install
 ```
 
-## Running application
+## Working with application
+Start docker
 
 ```
 npm run start:docker
 ```
 
+Stop docker
+```
+docker compose down
+```
+
+Vulnerabilities scanning
+```
+npm run scan:docker
+```
+
+Create migration
+```
+npx prisma migrate dev --name init
+```
+
+Use migrate
+```
+npx prisma migrate deploy
+```
+
+Use prisma studio
+```
+npx prisma studio
+```
+
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
-
-## Vulnerabilities scanning
-```
-nnpm run scan:docker
-```
 
 ## Testing
 
