@@ -25,6 +25,8 @@ COPY --from=build /user/app/.env ./
 COPY --from=build /user/app/doc/api.yaml ./doc/api.yaml
 COPY --from=build /user/app/tsconfig*.json ./
 
+RUN npx prisma generate
+
 EXPOSE 4000
 
 CMD ["npm", "run", "start:dev"]

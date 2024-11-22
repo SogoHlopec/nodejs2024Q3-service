@@ -8,6 +8,12 @@ RUN npm install && npm cache clean --force
 
 COPY . .
 
+FROM node:22.9.0-alpine
+
+WORKDIR /user/app
+
+COPY --from=build /user/app /user/app
+
 RUN npx prisma generate
 
 EXPOSE 4000

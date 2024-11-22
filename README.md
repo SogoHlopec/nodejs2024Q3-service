@@ -20,35 +20,20 @@ npm install
 ```
 
 ## Working with application
-Start docker
+Start docker app
 
 ```
 npm run start:docker
 ```
 
-Stop docker
+Stop docker app
 ```
-docker compose down
+npm run stop:docker
 ```
 
 Vulnerabilities scanning
 ```
 npm run scan:docker
-```
-
-Create migration
-```
-npx prisma migrate dev --name init
-```
-
-Use migrate
-```
-npx prisma migrate deploy
-```
-
-Use prisma studio
-```
-npx prisma studio
 ```
 
 After starting the app on port (4000 as default) you can open

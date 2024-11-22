@@ -21,6 +21,7 @@
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "start:docker": "docker compose up --build",
+        "stop:docker": "docker compose down",
         "scan:docker": "docker scout cves local://user/service-docker:latest && docker scout cves local://user/service-docker-postgres:latest"
     },
     "dependencies": {
