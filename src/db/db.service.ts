@@ -8,6 +8,7 @@ export class DbService
 {
   async onModuleInit() {
     await this.$connect();
+    console.log('Connected to database');
   }
 
   async onModuleDestroy() {

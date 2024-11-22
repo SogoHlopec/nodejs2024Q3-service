@@ -18,7 +18,9 @@ export class DbTrackRepository implements IDbTrackRepository {
     const track = await this.prisma.track.findUnique({
       where: { id },
     });
-    return track;
+    if (track) {
+      return track;
+    }
   }
 
   async create(createTrackDto: CreateTrackDto): Promise<DbTrack> {

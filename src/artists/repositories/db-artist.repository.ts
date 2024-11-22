@@ -18,7 +18,9 @@ export class DbArtistRepository implements IDbArtistRepository {
     const artist = await this.prisma.artist.findUnique({
       where: { id },
     });
-    return artist;
+    if (artist) {
+      return artist;
+    }
   }
 
   async create(createArtistDto: CreateArtistDto): Promise<DbArtist> {

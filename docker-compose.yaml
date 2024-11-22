@@ -1,22 +1,6 @@
 version: '3.8'
 
 services:
-  app:
-    build:
-      context: .
-    image: sogohlopec/service-docker:latest
-    ports:
-      - ${PORT}:${PORT}
-    depends_on:
-      - db
-    environment:
-      - PORT=${PORT}
-    restart: always
-    volumes:
-      - ./src:/user/app/src
-    networks:
-      - user-defined-bridge
-
   db:
     build:
       context: ./db
@@ -24,13 +8,33 @@ services:
     ports:
       - ${DB_PORT}:${DB_PORT}
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      DB_HOST: ${DB_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
+    networks:
+      - user-defined-bridge
+
+  app:
+    build:
+      context: .
+    image: sogohlopec/service-docker:latest
+    ports:
+      - ${PORT}:${PORT}
+      - ${PPRISMA_PORTORT}:${PRISMA_PORT}
+    depends_on:
+      - db
+    environment:
+      - PORT=${PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      - PRISMA_PORT=${PRISMA_PORT}
+    restart: always
+    volumes:
+      - ./src:/user/app/src
     networks:
       - user-defined-bridge
 

@@ -86,6 +86,6 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    this.userRepository.delete(id);
+    await this.userRepository.delete(id);
   }
 }

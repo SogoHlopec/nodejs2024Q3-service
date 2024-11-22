@@ -4,3 +4,6 @@ db
 dist
 .git
 *.md
+Dockerfile
+Dockerfile copy
+README.md

@@ -27,14 +27,16 @@ export class DbUserRepository implements IDbUserRepository {
     const user = await this.prisma.user.findUnique({
       where: { id },
     });
-    return {
-      id: user.id,
-      password: user.password,
-      login: user.login,
-      version: user.version,
-      createdAt: Date.parse(String(user.createdAt)),
-      updatedAt: Date.parse(String(user.updatedAt)),
-    };
+    if (user) {
+      return {
+        id: user.id,
+        password: user.password,
+        login: user.login,
+        version: user.version,
+        createdAt: Date.parse(String(user.createdAt)),
+        updatedAt: Date.parse(String(user.updatedAt)),
+      };
+    }
   }
 
   async create(createUserDto: CreateUserDto): Promise<DbUser> {
@@ -65,19 +67,30 @@ export class DbUserRepository implements IDbUserRepository {
         version: { increment: 1 },
       },
     });
-    return {
-      id: user.id,
-      password: user.password,
-      login: user.login,
-      version: user.version,
-      createdAt: Date.parse(String(user.createdAt)),
-      updatedAt: Date.parse(String(user.updatedAt)),
-    };
+    if (user) {
+      const updatedUser = await this.prisma.user.findUnique({
+        where: { id },
+      });
+
+      return {
+        id: updatedUser.id,
+        password: updatedUser.password,
+        login: updatedUser.login,
+        version: updatedUser.version,
+        createdAt: Date.parse(String(updatedUser.createdAt)),
+        updatedAt: Date.parse(String(updatedUser.updatedAt)) + 1,
+      };
+    }
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.user.delete({
+    const user = await this.prisma.user.findUnique({
       where: { id },
     });
+    if (user) {
+      await this.prisma.user.delete({
+        where: { id },
+      });
+    }
   }
 }

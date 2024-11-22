@@ -10,12 +10,12 @@ import { DbModule } from './db/db.module';
 
 @Module({
   imports: [
+    DbModule,
     UsersModule,
     TracksModule,
     ArtistsModule,
     AlbumsModule,
     FavoritesModule,
-    DbModule,
   ],
   controllers: [AppController],
   providers: [AppService],

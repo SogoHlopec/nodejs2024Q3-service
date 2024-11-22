@@ -1,4 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
+import { DbModule } from '../db/db.module';
 import { ArtistsService } from './artists.service';
 import { ArtistsController } from './artists.controller';
 import { TracksModule } from 'src/tracks/tracks.module';
@@ -11,6 +12,7 @@ import { DbArtistRepository } from './repositories/db-artist.repository';
     forwardRef(() => TracksModule),
     forwardRef(() => AlbumsModule),
     forwardRef(() => FavoritesModule),
+    DbModule,
   ],
   controllers: [ArtistsController],
   providers: [ArtistsService, DbArtistRepository],

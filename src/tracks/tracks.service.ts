@@ -9,15 +9,25 @@ import { validateUuid } from 'src/users/utils/uuid-validator.util';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { DbTrackRepository } from './repositories/db-track.repository';
 import { DbFavoritesRepository } from 'src/favorites/repositories/db-favorites.repository';
+import { DbArtistRepository } from 'src/artists/repositories/db-artist.repository';
 
 @Injectable()
 export class TracksService {
   constructor(
     private readonly trackRepository: DbTrackRepository,
     private readonly favoriteRepository: DbFavoritesRepository,
+    private readonly artistRepository: DbArtistRepository,
   ) {}
 
   async create(createTrackDto: CreateTrackDto): Promise<DbTrack> {
+    if (createTrackDto.artistId) {
+      const artistExists = await this.artistRepository.getById(
+        createTrackDto.artistId,
+      );
+      if (!artistExists) {
+        throw new NotFoundException('Artist not found');
+      }
+    }
     const track = await this.trackRepository.create(createTrackDto);
     return track;
   }

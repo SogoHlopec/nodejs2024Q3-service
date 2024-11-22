@@ -44,7 +44,7 @@ export class FavoritesService {
     const favorite = await this.favoritesRepository.getAll();
     const isAlreadyFavorite = favorite.tracks.some((t) => t.id === id);
     if (!isAlreadyFavorite) {
-      this.favoritesRepository.addTrack(id);
+      await this.favoritesRepository.addTrack(id);
     }
     return { message: 'Track added to favorites' };
   }
@@ -59,14 +59,14 @@ export class FavoritesService {
     if (!isAlreadyFavorite) {
       throw new NotFoundException('Track is not favorite');
     }
-    this.favoritesRepository.deleteTrack(id);
+    await this.favoritesRepository.deleteTrack(id);
   }
 
   async addAlbum(id: string): Promise<{ message: string }> {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
-    const album = this.albumRepository.getById(id);
+    const album = await this.albumRepository.getById(id);
     if (!album) {
       throw new UnprocessableEntityException('Album does not exist');
     }
@@ -74,7 +74,7 @@ export class FavoritesService {
     const favorite = await this.favoritesRepository.getAll();
     const isAlreadyFavorite = favorite.albums.some((t) => t.id === id);
     if (!isAlreadyFavorite) {
-      this.favoritesRepository.addAlbum(id);
+      await this.favoritesRepository.addAlbum(id);
     }
 
     return { message: 'Album added to favorites' };
@@ -90,22 +90,22 @@ export class FavoritesService {
     if (!isAlreadyFavorite) {
       throw new NotFoundException('Album is not favorite');
     }
-    this.favoritesRepository.deleteAlbum(id);
+    await this.favoritesRepository.deleteAlbum(id);
   }
 
   async addArtist(id: string): Promise<{ message: string }> {
     if (!validateUuid(id)) {
       throw new BadRequestException('Id is invalid');
     }
-    const artist = this.artistRepository.getById(id);
+    const artist = await this.artistRepository.getById(id);
     if (!artist) {
       throw new UnprocessableEntityException('Artist does not exist');
     }
 
     const favorite = await this.favoritesRepository.getAll();
-    const isAlreadyFavorite = favorite.artists.some((t) => t.id === id);
+    const isAlreadyFavorite = favorite.artists.some((item) => item.id === id);
     if (!isAlreadyFavorite) {
-      this.favoritesRepository.addArtist(id);
+      await this.favoritesRepository.addArtist(id);
     }
 
     return { message: 'Artist added to favorites' };
@@ -121,6 +121,6 @@ export class FavoritesService {
     if (!isAlreadyFavorite) {
       throw new NotFoundException('Artist is not favorite');
     }
-    this.favoritesRepository.deleteArtist(id);
+    await this.favoritesRepository.deleteArtist(id);
   }
 }
