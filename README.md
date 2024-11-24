@@ -7,10 +7,16 @@
 - DOcker - [Download & Install Docker](https://docs.docker.com/get-started/get-docker/).
 
 ## Downloading
-
+Clone the repository
 ```
 git clone https://github.com/SogoHlopec/nodejs2024Q3-service.git
+```
+Navigate to the project folder
+```
 cd nodejs2024Q3-service
+```
+Navigate to the branch
+```
 git checkout part-2
 ```
 
