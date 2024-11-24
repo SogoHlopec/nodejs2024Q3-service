@@ -21,8 +21,9 @@
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "start:docker": "docker compose up --build",
+        "start:devMigrate": "npx prisma migrate dev && nest start --watch",
         "stop:docker": "docker compose down",
-        "scan:docker": "docker scout cves local://user/service-docker:latest && docker scout cves local://user/service-docker-postgres:latest"
+        "scan:docker": "docker scout cves local://sogohlopec/service-docker:latest && docker scout cves local://sogohlopec/service-docker-postgres:latest"
     },
     "dependencies": {
         "@nestjs/cli": "^8.2.8",

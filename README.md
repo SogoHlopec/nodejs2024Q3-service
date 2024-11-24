@@ -32,6 +32,12 @@ npm run stop:docker
 ```
 
 Vulnerabilities scanning
+First dowdload a package for Docker ([Docs](https://docs.docker.com/scout/install/))
+```
+curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
+sh install-scout.sh
+```
+Then start script
 ```
 npm run scan:docker
 ```
