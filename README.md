@@ -10,7 +10,8 @@
 
 ```
 git clone https://github.com/SogoHlopec/nodejs2024Q3-service.git
-get checkout part-2
+cd nodejs2024Q3-service
+git checkout part-2
 ```
 
 ## Installing NPM modules
