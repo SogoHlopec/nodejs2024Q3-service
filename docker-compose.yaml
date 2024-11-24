@@ -16,6 +16,7 @@ services:
     restart: always
     volumes:
       - db-data:/var/lib/postgresql/data
+      - db-logs:/var/lib/postgresql
     networks:
       - user-defined-bridge
 
@@ -44,4 +45,6 @@ networks:
 
 volumes:
   db-data:
+    driver: local
+  db-logs:
     driver: local
