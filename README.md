@@ -10,8 +10,12 @@
 
 ```
 git clone https://github.com/SogoHlopec/nodejs2024Q3-service.git
+```
+```
 cd nodejs2024Q3-service
-git checkout part-2
+```
+```
+git checkout part-3
 ```
 
 ## Installing NPM modules
@@ -33,6 +37,7 @@ npm run stop:docker
 ```
 
 Vulnerabilities scanning
+
 First dowdload a package for Docker ([Docs](https://docs.docker.com/scout/install/))
 ```
 curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh -o install-scout.sh
