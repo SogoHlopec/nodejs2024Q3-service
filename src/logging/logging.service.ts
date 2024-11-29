@@ -32,7 +32,7 @@ export class LoggingService {
     if (this.isLevelEnabled('error')) {
       console.error(this.formatMessage('ERROR', message));
       if (trace) {
-        console.error(`Trace: ${trace}`);
+        console.error(`[TRACE]: ${trace}`);
       }
     }
   }

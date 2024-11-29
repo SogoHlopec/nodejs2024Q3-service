@@ -23,6 +23,18 @@ async function bootstrap() {
 
   app.useGlobalFilters(new AllExceptionsFilter(loggingService));
 
+  process.on('uncaughtException', (error) => {
+    loggingService.error('Uncaught Exception detected', error.stack);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
+    loggingService.error(
+      'Unhandled Rejection detected',
+      reason?.stack || reason,
+    );
+  });
+
   await app.listen(PORT, () => {
     loggingService.log(`Server is running on port ${PORT}`);
   });

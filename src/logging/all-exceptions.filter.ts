@@ -27,10 +27,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal Server Error';
 
+    const trace = exception instanceof Error ? exception.stack : undefined;
+
     this.loggingService.error(
       `Exception thrown for ${request.method} ${
         request.url
       } | Status: ${status} | Message: ${JSON.stringify(message)}`,
+      trace,
     );
 
     response.status(status).json({
