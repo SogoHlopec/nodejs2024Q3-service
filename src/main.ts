@@ -7,6 +7,7 @@ import * as fs from 'node:fs/promises';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { LoggingService } from './logging/logging.service';
+import { AllExceptionsFilter } from './logging/all-exceptions.filter';
 
 dotenv.config();
 const PORT = process.env.PORT || 4000;
@@ -19,6 +20,8 @@ async function bootstrap() {
     await fs.readFile(join(__dirname, '../..', 'doc', 'api.yaml'), 'utf8'),
   );
   app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+  app.useGlobalFilters(new AllExceptionsFilter(loggingService));
 
   await app.listen(PORT, () => {
     loggingService.log(`Server is running on port ${PORT}`);
