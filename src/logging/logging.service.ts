@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
-import * as dotenv from 'dotenv';
 
 @Injectable()
 export class LoggingService {
   private readonly logLevels = ['log', 'warn', 'error', 'debug', 'verbose'];
   private logFilePath: string;
+  private maxFileSizeKb: number;
 
   constructor() {
     this.logFilePath = path.resolve(__dirname, '../../logs/application.log');
+    this.maxFileSizeKb = Number(process.env.LOG_FILE_MAX_SIZE_KB) || 1024;
     const logDir = path.dirname(this.logFilePath);
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true });
@@ -28,7 +29,24 @@ export class LoggingService {
     return `${timestamp} [${level}]: ${message}`;
   }
 
+  private rotateLogFile(): void {
+    try {
+      if (fs.existsSync(this.logFilePath)) {
+        const stats = fs.statSync(this.logFilePath);
+        const fileSizeInKb = stats.size / 1024;
+        if (fileSizeInKb > this.maxFileSizeKb) {
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+          const rotatedFilePath = `${this.logFilePath}.${timestamp}`;
+          fs.renameSync(this.logFilePath, rotatedFilePath);
+        }
+      }
+    } catch (err) {
+      console.error('[ERROR] Failed to rotate log file:', err);
+    }
+  }
+
   private writeToFile(logMessage: string): void {
+    this.rotateLogFile();
     fs.appendFile(this.logFilePath, logMessage + '\n', (err) => {
       if (err) {
         console.error('[ERROR] Failed to write to log file:', err);
