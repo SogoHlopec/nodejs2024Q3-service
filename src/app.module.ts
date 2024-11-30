@@ -12,13 +12,13 @@ import { LoggingMiddleware } from './logging/logging.middleware';
 
 @Module({
   imports: [
+    LoggingModule,
     DbModule,
     UsersModule,
     TracksModule,
     ArtistsModule,
     AlbumsModule,
     FavoritesModule,
-    LoggingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

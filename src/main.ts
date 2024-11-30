@@ -23,8 +23,8 @@ async function bootstrap() {
 
   app.useGlobalFilters(new AllExceptionsFilter(loggingService));
 
-  process.on('uncaughtException', (error) => {
-    loggingService.error('Uncaught Exception detected', error.stack);
+  process.on('uncaughtException', (err) => {
+    loggingService.error('Uncaught Exception detected', err.stack);
     process.exit(1);
   });
 
