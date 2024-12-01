@@ -3,7 +3,6 @@ import {
   Controller,
   HttpCode,
   Post,
-  UnauthorizedException,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
