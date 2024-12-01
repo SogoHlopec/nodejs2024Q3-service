@@ -8,15 +8,12 @@ import {
   Put,
   ValidationPipe,
   HttpCode,
-  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UserResponseDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('user')
-@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 

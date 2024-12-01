@@ -7,14 +7,15 @@ import {
 import { Reflector } from '@nestjs/core';
 import { verifyToken } from './utils/jwt.util';
 
+const EXCLUDED_PATHS = ['/auth/signup', '/auth/login', '/doc', '/'];
+
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
-    const excludedPaths = ['/auth/signup', '/auth/login', '/doc', '/'];
-    if (excludedPaths.includes(request.path)) {
+    if (EXCLUDED_PATHS.includes(request.path)) {
       return true;
     }
 
