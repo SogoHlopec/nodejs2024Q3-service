@@ -88,4 +88,18 @@ export class UsersService {
     }
     await this.userRepository.delete(id);
   }
+
+  async findByLogin(login: string) {
+    const user = await this.userRepository.findByLogin(login);
+    if (!user) {
+      return false;
+    }
+    return {
+      id: user.id,
+      login: user.login,
+      version: user.version,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
 }

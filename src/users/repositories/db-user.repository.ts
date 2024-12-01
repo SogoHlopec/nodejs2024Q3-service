@@ -93,4 +93,20 @@ export class DbUserRepository implements IDbUserRepository {
       });
     }
   }
+
+  async findByLogin(login: string): Promise<DbUser> {
+    const user = await this.prisma.user.findUnique({
+      where: { login },
+    });
+    if (user) {
+      return {
+        id: user.id,
+        password: user.password,
+        login: user.login,
+        version: user.version,
+        createdAt: Date.parse(String(user.createdAt)),
+        updatedAt: Date.parse(String(user.updatedAt)),
+      };
+    }
+  }
 }
