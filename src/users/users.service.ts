@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { CreateUserDto, UserResponseDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 import { validateUuid } from './utils/uuid-validator.util';
@@ -101,5 +102,10 @@ export class UsersService {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
+  }
+
+  async checkPassword(login: string, password: string): Promise<boolean> {
+    const user = await this.userRepository.findByLogin(login);
+    return bcrypt.compare(password, user.password);
   }
 }
