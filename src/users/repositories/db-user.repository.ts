@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { DbService } from '../../db/db.service';
 import { DbUser } from '../entities/user.entity';
 import { IDbUserRepository } from './db-user.repository.interface';
@@ -40,10 +41,12 @@ export class DbUserRepository implements IDbUserRepository {
   }
 
   async create(createUserDto: CreateUserDto): Promise<DbUser> {
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
     const newUser = await this.prisma.user.create({
       data: {
         login: createUserDto.login,
-        password: createUserDto.password,
+        password: hashedPassword,
       },
     });
     return {
@@ -60,10 +63,12 @@ export class DbUserRepository implements IDbUserRepository {
     id: string,
     updatePasswordDto: UpdatePasswordDto,
   ): Promise<DbUser> {
+    const hashedPassword = await bcrypt.hash(updatePasswordDto.newPassword, 10);
+
     const user = await this.prisma.user.update({
       where: { id },
       data: {
-        password: updatePasswordDto.newPassword,
+        password: hashedPassword,
         version: { increment: 1 },
       },
     });

@@ -2,9 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
@@ -21,11 +19,10 @@ export class AuthService {
     if (existingUser) {
       throw new BadRequestException('User with this login already exists');
     }
-    const hashedPassword = await bcrypt.hash(password, 12);
 
     await this.usersService.create({
       login,
-      password: hashedPassword,
+      password,
     });
 
     return { message: 'User successfully created' };

@@ -15,6 +15,10 @@ export class UsersService {
   constructor(private readonly userRepository: DbUserRepository) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+    const existingUser = await this.findByLogin(createUserDto.login);
+    if (existingUser) {
+      throw new BadRequestException('User with this login already exists');
+    }
     const user = await this.userRepository.create(createUserDto);
     return {
       id: user.id,
@@ -66,7 +70,12 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    if (user.password !== updatePasswordDto.oldPassword) {
+
+    const isPasswordValid = await this.checkPassword(
+      user.login,
+      updatePasswordDto.oldPassword,
+    );
+    if (!isPasswordValid) {
       throw new ForbiddenException('Old password is wrong');
     }
     const userUpdate = await this.userRepository.update(id, updatePasswordDto);
@@ -106,6 +115,6 @@ export class UsersService {
 
   async checkPassword(login: string, password: string): Promise<boolean> {
     const user = await this.userRepository.findByLogin(login);
-    return bcrypt.compare(password, user.password);
+    return await bcrypt.compare(password, user.password);
   }
 }
