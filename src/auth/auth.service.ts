@@ -3,16 +3,25 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import * as dotenv from 'dotenv';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { generateAccessToken, generateRefreshToken } from './utils/jwt.util';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyToken,
+} from './utils/jwt.util';
+
+dotenv.config();
 
 @Injectable()
 export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
-  async signup(createUserDto: CreateUserDto): Promise<{ message: string }> {
+  async signup(
+    createUserDto: CreateUserDto,
+  ): Promise<{ id: string; message: string }> {
     const login = createUserDto.login;
     const password = createUserDto.password;
     const existingUser = await this.usersService.findByLogin(login);
@@ -20,12 +29,12 @@ export class AuthService {
       throw new BadRequestException('User with this login already exists');
     }
 
-    await this.usersService.create({
+    const newUser = await this.usersService.create({
       login,
       password,
     });
 
-    return { message: 'User successfully created' };
+    return { id: newUser.id, message: 'User successfully created' };
   }
 
   async login(
@@ -52,5 +61,23 @@ export class AuthService {
     const refreshToken = generateRefreshToken(payload);
 
     return { accessToken, refreshToken };
+  }
+
+  async refreshTokens(
+    refreshToken: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const payload = verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    if (!payload) {
+      throw new ForbiddenException('Refresh token is invalid or expired');
+    }
+
+    const { userId, login } = payload as { userId: string; login: string };
+    console.log('userId ' + userId);
+    console.log('login ' + login);
+    const newAccessToken = generateAccessToken({ userId, login });
+    const newRefreshToken = generateRefreshToken({ userId, login });
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 }
